@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#/etc/inetstart.sh &
+while [ 1 = 1 ] 
+do
+I=0
+cat /automedia/radiolist.m3u | while read LINE;
+  do
+   let "I+=1"
+   NO=`cat /automedia/oldstation.db`
+   echo $NO
+     if [ "$NO" = "$I" ] 
+     then
+      echo $LINE
+      /automedia/mplayer.sh $LINE 500 20
+      killall mplayer
+     fi
+  done
+done
