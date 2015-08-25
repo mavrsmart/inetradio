@@ -22,8 +22,9 @@ do
   count=$(ping -c $COUNT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   if [ $count -lt 8 ]; then
     # ie 70% failed
-        ifdown wlan0
-	ifup wlan0
+        poff internet
+        sleep 2
+        pon internet
 	sleep 3
 	killall mplayer
 	killall mplayer.sh
