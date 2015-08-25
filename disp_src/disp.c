@@ -13,6 +13,7 @@ typedef unsigned short uint16;
 char string_lcd[500];
 char result_string[500]; //Строка в 20 символов
 char result_stringn[500]; //Строка в 20 символов
+char *result_rssi[20];
 int oldstat=1;
 char refreshbitrate=1;
 
@@ -30,6 +31,14 @@ int readnumstation(){
     FILE *tmp;
 //    tmp=fopen("/automedia/oldstation.db","r");
     tmp=fopen("/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram","r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
     fscanf(tmp,"%i\n",  &pr);
     fclose(tmp);
     return pr;
@@ -40,6 +49,14 @@ int readbitrate(){
     int pr;
     FILE *tmp;
     tmp=fopen("/tmp/bitrate","r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
     fscanf(tmp,"%i\n",  &pr);
     fclose(tmp);
     return pr;
@@ -51,6 +68,14 @@ int readpingtest(){
     int pr;
     FILE *tmp;
     tmp=fopen("/tmp/pingtest","r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
     fscanf(tmp,"%i\n",  &pr);
     fclose(tmp);
     return pr;
@@ -63,16 +88,18 @@ FILE *file;
     char *fname = "/tmp/title.cp1251";
  
     file = fopen(fname,"r");
+
+    result_string[0]=0x00;
+
  
     if(file == NULL)
     {
-	printf("Error '%s'",fname);
+ 	printf("Error '%s'",fname);
+	return;
     }
  
     int i=0;
     char *real_tail;
-
-    result_string[0]=0x00;
 
     
     while(fgets(result_string+strlen(result_string),sizeof(result_string),file))
@@ -103,16 +130,20 @@ FILE *file;
     char *fname = "/tmp/streamname.cp1251";
  
     file = fopen(fname,"r");
+
+    result_stringn[0]=0x00;
+
  
     if(file == NULL)
     {
 	printf("Error '%s'",fname);
+        fclose(file);
+	return;
     }
  
     int i=0;
     char *real_tail;
 
-    result_stringn[0]=0x00;
 
     
     while(fgets(result_stringn+strlen(result_stringn),sizeof(result_stringn),file))
@@ -135,6 +166,50 @@ FILE *file;
  }
  
     fclose(file);
+}
+
+
+int getrssi(){
+FILE *file; 
+    char *fname = "/tmp/rssi";
+
+    result_rssi[0]=0x00;
+    result_rssi[1]=0x00;
+    result_rssi[2]=0x00;
+    result_rssi[3]=0x00;
+    result_rssi[4]=0x00;
+    result_rssi[5]=0x00;
+    result_rssi[6]=0x00;
+    result_rssi[7]=0x00;
+
+ 
+    file = fopen(fname,"r");
+ 
+    if(file == NULL)
+    {
+ 	printf("Error '%s'",fname);
+//        fclose(file);
+	return -1;
+    }
+ 
+    int i=0;
+    char *real_tail;
+
+    
+    while(fgets(result_rssi+strlen(result_rssi),sizeof(result_rssi),file))
+    {
+	real_tail="";
+        
+	if(result_rssi[strlen(result_rssi)-1] == '\n')//проверяем является ли последний элемент в строке символом её окончания
+	{
+	    real_tail="\\n";
+	    result_rssi[strlen(result_rssi)-1]=' ';
+	};// эта часть кода добавлена лишь для отображения символа конца строки в консоль без перевода на новую строку	
+ 
+ }
+ 
+    fclose(file);
+    return 0;
 }
 
 
@@ -208,6 +283,15 @@ if ((fp = fopen("/tmp/newchannel.flg", "r")) != NULL){
     
         LCD_Goto(12,2);
         LCD_Write_String(buf);
+          
+         //Выведем RSSI
+
+         if(getrssi()==0){
+            LCD_Goto(4,2);
+            LCD_Write_String(result_rssi);
+	 }
+
+
   }
 }
 
@@ -240,11 +324,13 @@ int main (int argc, char *argv[]) {
             LCD_Write_Char(0x01);
 	    LCD_Goto(3,1);
             LCD_Write_Char(0x00);
+	    LCD_Goto(3,2);
+            LCD_Write_Char(0x00);
 	    LCD_Goto(15,1);
             LCD_Write_Char(0x00);
 
 	while(1){
-        
+
 	   if(refreshbitrate==1){
            //рисуем битрейт    
            int bitrate=readbitrate();

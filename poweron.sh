@@ -2,6 +2,8 @@
 
 #/etc/inetstart.sh &
 
+/automedia/rssi.sh &
+
 while true
 do
 I=0
@@ -15,7 +17,7 @@ cat /automedia/radiolist.m3u | while read LINE;
      then
       killall mplayer.sh
       killall mplayer
-      /automedia/mplayer.sh $LINE 800 30
+      /automedia/mplayer.sh $LINE 1000 30
       killall mplayer
      fi
   done

@@ -435,12 +435,13 @@ void LCD_Write_String(const char *str)
 
    while (*str)
    {
+        if((*str!=0x00)&&(*str!=0x13)&&(*str!=0x0a)&&(*str!=0x0d)){
         // Send upper nibble
         _LCD_Write_Upper_Nibble(chr_to_cyr(*str));
 
         // Send lower nibble
         _LCD_Write_Lower_Nibble(chr_to_cyr(*str));
-
+        }
         str++;
    }
 }
