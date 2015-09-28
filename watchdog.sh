@@ -1,13 +1,10 @@
 #!/bin/bash
 
-HOSTS="8.8.8.8"
-
-# no ping request
-COUNT=10
-
 
 while true
 do
+
+pon internet &
 
 if ps ax | grep disp | grep -vq grep
 then
@@ -16,20 +13,33 @@ else
   /automedia/disp &
 fi
 
+  sleep 5
 
-for myHost in $HOSTS
-do
-  count=$(ping -c $COUNT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
-  if [ $count -lt 8 ]; then
+  count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
+  echo "Received (8):" $count
+  if [ "$count" != "" ]; then
+
+  if [ $count -lt 5 ]; then
     # ie 70% failed
+        echo "Poor network. Restart"
         poff internet
-        sleep 2
-        pon internet
-	sleep 3
+        pon internet &
+	sleep 30
 	killall mplayer
 	killall mplayer.sh
 	killall pingtest.sh
-	/automedia/pingtest.sh
+	/automedia/pingtest.sh &
   fi
-done
+else
+	echo "Not network. Restart"
+        poff internet
+        pon internet &
+	sleep 30
+	killall mplayer
+	killall mplayer.sh
+	killall pingtest.sh
+	/automedia/pingtest.sh &
+
+fi
+
 done

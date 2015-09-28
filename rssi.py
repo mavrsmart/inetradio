@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import binascii
 import sys
-f = open("/dev/ttyUSB2", "r+")
+f = open("/srv/modem/tty3g2", "r+")
 data=''
 error="Usage: python ussd.py action (code)\r\nActions: balans, popolnit, data-status, 3g-data-status, signal"
 if len(sys.argv) < 2:

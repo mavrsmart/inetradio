@@ -2,7 +2,7 @@
 
 #/etc/inetstart.sh &
 
-/automedia/rssi.sh &
+#/automedia/rssi.sh &
 
 while true
 do
