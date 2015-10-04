@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+#bluetoothd
+
+sysctl -p
+
+
+service dnsmasq restart
+
+killall disp
+
+mkdir /tmp/lirc
+
+mkdir /tmp/mikas
+echo "" > /tmp/mikas/probeg.bin
+echo "" > /tmp/mikas/param.bin
+
+echo "" > /tmp/pingtest
+echo "" > /tmp/bitrate
+echo "" > /tmp/title.cp1251
+echo "" > /tmp/streamtitle
+echo "" > /tmp/streamtitle.cp1251
+
+swapon /dev/mmcblk0p3 &
+
+sysctl -p
+
+/etc/iptables.sh &
+
+/etc/inetstart.sh &
+
+killall irexec
+
+sudo /usr/bin/irexec -d /etc/lirc/lircrc.conf 
+killall poweron.sh
+killall mplayer
+killall mplayer.sh
+killall watchdog.sh
+killall watchdog.sh
+killall pingtest.sh
+
+#Отправляем k-line
+#remserial -d -p 23000 -s "57600 raw" /dev/ttyUSB6 &
+#remserial -d -r 127.0.0.1 -p 23000 -s "57600 raw" /dev/ttyS1 &
+
+
+/automedia/mikas/mikas &
+
+/automedia/rssi.sh &
+
+
+#sleep 
+
+/automedia/watchdog.sh &
+/automedia/pingtest.sh &
+
+#/automedia/disp &
+
+
+#irexec -d /etc/lirc/lircrc.conf
+
+#bash /automedia/poweron.sh &
+
+exit 0

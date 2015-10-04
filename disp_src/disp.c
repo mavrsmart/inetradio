@@ -17,6 +17,7 @@ char *result_rssi[20];
 int oldstat=1;
 char refreshbitrate=1;
 
+char mode=0;
 
 FILE *fp;
 
@@ -24,6 +25,13 @@ time_t now;
 struct tm local_date_time;
  char c_time_string[50];
 char rev=0;
+
+ long probeg;
+ long sutochn;
+ long savedprobeg;
+
+
+unsigned char power=1;
 
 int readnumstation(){
    int num;
@@ -43,6 +51,104 @@ int readnumstation(){
     fclose(tmp);
     return pr;
 }
+
+
+int readintparam(char* fname){
+   int num;
+    int pr;
+    FILE *tmp;
+//    tmp=fopen("/automedia/oldstation.db","r");
+    tmp=fopen(fname,"r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
+    fscanf(tmp,"%i\n",  &pr);
+    fclose(tmp);
+    return pr;
+}
+
+
+long readlongparam(char* fname){
+   long num;
+    long pr;
+    FILE *tmp;
+    tmp=fopen(fname,"r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
+    fscanf(tmp,"%lu\n",  &pr);
+    fclose(tmp);
+    return pr;
+}
+
+
+char* readstringparam(char* fname){
+   char* num;
+    char* pr;
+    FILE *tmp;
+    tmp=fopen(fname,"r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
+    fscanf(tmp,"%s\n",  &pr);
+    fclose(tmp);
+    return pr;
+}
+
+
+
+void writelongparam(char* fname,long parm){
+    FILE *tmp;
+    tmp=fopen(fname,"w");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
+    fprintf(tmp,"%lu\n",  parm);
+    fclose(tmp);
+}
+
+
+float readfloatparam(char* fname){
+   float num;
+    float pr;
+    FILE *tmp;
+    tmp=fopen(fname,"r");
+
+    if(tmp == NULL)
+    {
+ 	printf("Error '%s'",tmp);
+	return;
+    }
+
+
+    fscanf(tmp,"%f\n",  &pr);
+    fclose(tmp);
+    return pr;
+}
+
+
+
+
 
 int readbitrate(){
    int num;
@@ -234,6 +340,14 @@ void loop() {
              }
              usleep(200000);
 
+        if ((fp = fopen("/tmp/lirc/source", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/power", "r")) != NULL){
+	    return;
+        }
+
  
 if ((fp = fopen("/tmp/newchannel.flg", "r")) != NULL){
   remove("/tmp/newchannel.flg");
@@ -329,7 +443,13 @@ int main (int argc, char *argv[]) {
 	    LCD_Goto(15,1);
             LCD_Write_Char(0x00);
 
+          //Инициализация констант
+          savedprobeg=readlongparam("/automedia/savedprobeg.const");
+
+
 	while(1){
+           
+           if(mode==0){//Режим инет радио
 
 	   if(refreshbitrate==1){
            //рисуем битрейт    
@@ -360,6 +480,210 @@ int main (int argc, char *argv[]) {
 // рисуем первую бегущую строку
 	    getstring();
 	    loop();
+
+        }//Конец режима инет радио
+
+       if(mode==1){//Режим одометра
+         
+         probeg=readlongparam("/tmp/mikas/probeg");
+         sutochn=probeg-savedprobeg;
+         LCD_Goto(8,1);
+	 LCD_Write_Int2Dec(8,probeg,2);
+         LCD_Goto(8,2);
+	 LCD_Write_Int2Dec(8,sutochn,2);
+         usleep(300000);
+
+       }//Конец режима одометра
+
+
+       if(mode==2){//Режим ресходомера
+         
+         long rashchas=(float)readfloatparam("/tmp/mikas/rashchas")*100;
+         long rashod=(float)readfloatparam("/tmp/mikas/rashod")*100;
+         LCD_Goto(12,1);
+	 LCD_Write_Int2Dec(4,rashchas,2);
+         LCD_Goto(12,2);
+	 LCD_Write_Int2Dec(4,rashod,2);
+         usleep(300000);
+
+       }//Конец режима расходомера
+
+
+       if(mode==3){//Режим температуры и оборотов
+         
+         int toj=readlongparam("/tmp/mikas/temp");
+         int oboroti=readlongparam("/tmp/mikas/oboroti");
+         LCD_Goto(12,1);
+	 LCD_Write_Int(toj);
+         LCD_Goto(12,2);
+	 LCD_Write_Int(oboroti);
+         usleep(300000);
+
+       }//Конец режима одометра
+
+
+       if(mode==4){//Режим скорость и обороты
+         
+         int speed=readlongparam("/tmp/mikas/speed");
+         int oboroti=readlongparam("/tmp/mikas/oboroti");
+         LCD_Goto(12,1);
+	 LCD_Write_Int(speed);
+         LCD_Goto(12,2);
+	 LCD_Write_Int(oboroti);
+         usleep(300000);
+
+       }//Конец режима одометра
+
+
+
+       
+        //Обработка файлов статусов
+        if ((fp = fopen("/tmp/lirc/mute", "r")) != NULL){
+           remove("/tmp/lirc/mute");
+           if(mode==1){
+	     writelongparam("/automedia/savedprobeg.const",probeg);
+	     savedprobeg=probeg;
+	   }
+        }
+
+        if ((fp = fopen("/tmp/lirc/power", "r")) != NULL){
+           remove("/tmp/lirc/power");
+	     if(power==0){
+	        power=1;
+                LCD_BL(power);
+                system( "echo 1 > /sys/bus/usb/devices/2-1/authorized");
+                system( "echo 1 > /sys/bus/usb/devices/4-1/authorized");
+                system( "/automedia/startupcron.sh &");
+	     }else{
+	        power=0;
+                LCD_BL(power);
+                system( "echo 0 > /sys/bus/usb/devices/2-1/authorized");
+                system( "echo 0 > /sys/bus/usb/devices/4-1/authorized");
+                system( "killall startupcron.sh");
+                system( "killall watchdog.sh");
+                system( "killall mikas");
+                system( "killall pingtest.sh");
+	     }
+        }
+
+        if ((fp = fopen("/tmp/lirc/0", "r")) != NULL){
+           remove("/tmp/lirc/0");
+	   mode=0;
+	    LCD_Goto(1,1);
+    	    LCD_Write_String("                ");
+	    LCD_Goto(1,2);
+    	    LCD_Write_String("                ");
+
+	    LCD_Goto(1,2);
+            LCD_Write_Char(0x01);
+	    LCD_Goto(3,1);
+            LCD_Write_Char(0x00);
+	    LCD_Goto(3,2);
+            LCD_Write_Char(0x00);
+	    LCD_Goto(15,1);
+            LCD_Write_Char(0x00);
+
+        }
+
+        if ((fp = fopen("/tmp/lirc/1", "r")) != NULL){
+           remove("/tmp/lirc/1");
+	   mode=1;
+
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("Пробег          ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Суточн          ");
+
+        }
+
+        if ((fp = fopen("/tmp/lirc/2", "r")) != NULL){
+           remove("/tmp/lirc/2");
+	   mode=2;
+
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("л/час           ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("л/100км         ");
+
+        }
+
+        if ((fp = fopen("/tmp/lirc/3", "r")) != NULL){
+           remove("/tmp/lirc/3");
+	   mode=3;
+
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("ОЖ град         ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Обороты         ");
+
+        }
+        if ((fp = fopen("/tmp/lirc/4", "r")) != NULL){
+           remove("/tmp/lirc/4");
+	   mode=4;
+
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("Скорость        ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Обороты         ");
+
+        }
+
+
+        if ((fp = fopen("/tmp/lirc/source", "r")) != NULL){
+           remove("/tmp/lirc/source");
+
+	   mode++;
+           if(mode==5){
+              mode=0;
+           }
+
+
+	    //Инициализация дисплея
+	    if(mode==0){
+	    LCD_Goto(1,1);
+    	    LCD_Write_String("                ");
+	    LCD_Goto(1,2);
+    	    LCD_Write_String("                ");
+
+	    LCD_Goto(1,2);
+            LCD_Write_Char(0x01);
+	    LCD_Goto(3,1);
+            LCD_Write_Char(0x00);
+	    LCD_Goto(3,2);
+            LCD_Write_Char(0x00);
+	    LCD_Goto(15,1);
+            LCD_Write_Char(0x00);
+	    }
+	    if(mode==1){
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("Пробег          ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Суточн          ");
+	    }
+	    if(mode==2){
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("л/час           ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("л/100км         ");
+	    }
+
+	    if(mode==3){
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("ОЖ град         ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Обороты         ");
+	    }
+
+	    if(mode==4){
+		    LCD_Goto(1,1);
+    		    LCD_Write_String("Скорость        ");
+		    LCD_Goto(1,2);
+    		    LCD_Write_String("Обороты         ");
+	    }
+
+
+        }
+
 
 	}
 

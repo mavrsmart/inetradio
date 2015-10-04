@@ -168,7 +168,7 @@ void LCD_Open()
 void LCD_BL(unsigned char status)
 {
     LCD_BL_Status = status;
-    LCD_Write_Byte(0x00, 0x00);
+//    LCD_Write_Byte(0x00, 0x00);
 }
 
 
@@ -497,6 +497,36 @@ void LCD_Write_Int1Dec(char v,long num,char pm)
     }
     }
 }
+
+
+void LCD_Write_Int2Dec(char v,long num,char pm)
+{
+    if (num < 0) { LCD_Write_String("-"); num *= -1; }else{if(pm==1){LCD_Write_String(" ");}}
+
+    unsigned char number[10];
+    unsigned char num_count = 0;
+
+
+    do {
+        number[num_count] = num % 10;
+        num_count++;
+        num /= 10;
+    } while (num > 0);
+
+    for (int i = v-1; i>= 0; i--)
+    {
+        if(i==1){
+            LCD_Write_Char('.');
+        }
+    if(num_count<=i){
+        LCD_Write_Char('0');
+    
+    }else{
+        LCD_Write_Char(number[i] + 0b00110000);
+    }
+    }
+}
+
 
 void LCD_Write_Int1(char v,long num)
 {

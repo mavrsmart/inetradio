@@ -36,6 +36,7 @@ void LCD_Write_Char(unsigned char c);
 void LCD_Write_String(const char *str);
 void LCD_Write_Int(long num);
 void LCD_Write_Int1Dec(char v,long num,char pm);
+void LCD_Write_Int2Dec(char v,long num,char pm);
 void LCD_Write_Int1(char v,long num);
 void LCD_Write_Byte(unsigned char address, unsigned char n);
 void LCD_Clear();

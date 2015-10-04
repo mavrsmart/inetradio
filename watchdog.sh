@@ -13,6 +13,14 @@ else
   /automedia/disp &
 fi
 
+if ps ax | grep mikas | grep -vq grep
+then
+  echo ""
+else
+  /automedia/mikas/mikas &
+fi
+
+
   sleep 5
 
   count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')

@@ -80,12 +80,13 @@ int main(int argc, char **argv)
    char MikasInit[1] = {0xf0};  
    char MikasStart[5] = {0x81, 0x10, 0xf1, 0x81, 0x03};  
    char MikasParams[6] = {0x82, 0x10, 0xf1, 0x21, 0x01,0xa5};  
+   char MikasProbeg[6] = {0x82, 0x10, 0xf1, 0x21, 0xF3,0x97};  
    char MikasError[8] = {0x84,0x10,0xF1,0x18,0x00,0x00,0x00,0x9D};
    int BytesRead=0;  
    int i;  
    int n;  
    int fdout;  
-//   FILE* fp;  
+   FILE* fout;  
    char bRead[BUFSIZE];  
 
     int fd;
@@ -139,28 +140,116 @@ int main(int argc, char **argv)
 
     int temp=bRead[19]-40;
     printf("-- Температура ОЖ: %d\n",temp);    
+
+   fout = fopen("/tmp/mikas/temp", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",temp);    
+   fclose(fout);
+
+
+
     int tps=bRead[21];
     printf("-- Положение дроссельной заслонки: %d\n",tps);    
+
+   fout = fopen("/tmp/mikas/tps", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",tps);    
+   fclose(fout);
+
+
     int oboroti=bRead[22]*40;
     printf("-- Обороты двигателя: %d\n",oboroti);    
+
+   fout = fopen("/tmp/mikas/oboroti", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",oboroti);    
+   fclose(fout);
+
+
     int oborotihh=bRead[23]*10;
     printf("-- Обороты холостого хода: %d\n",oborotihh);    
+
+
+   fout = fopen("/tmp/mikas/oborotixx", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",oborotihh);    
+   fclose(fout);
+
+
     int rxxcel=bRead[24];
     printf("-- РХХ целевое: %d\n",rxxcel);    
+
+
+   fout = fopen("/tmp/mikas/rxxcel", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",rxxcel);    
+   fclose(fout);
+
+
+
     int rxxtek=bRead[25];
     printf("-- РХХ текущее: %d\n",rxxtek);    
+
+   fout = fopen("/tmp/mikas/rxxtek", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",rxxtek);    
+   fclose(fout);
+
+
+
     float uoz=bRead[26]/2;
     printf("-- УОЗ: %f\n",uoz);    
+
+   fout = fopen("/tmp/mikas/uoz", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%f\n",uoz);    
+   fclose(fout);
+
+
+
     int speed=bRead[27];
     printf("-- Скорость: %d\n",speed);    
+
+   fout = fopen("/tmp/mikas/speed", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",speed);    
+   fclose(fout);
+
     float vcc=5.2+bRead[28]*0.05;
     printf("-- Напряжение: %f\n",vcc);    
+
+   fout = fopen("/tmp/mikas/vcc", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%f\n",vcc);    
+   fclose(fout);
+
+
     int oborxxjel=bRead[29]*10;
     printf("-- Желательные обороты ХХ: %d\n",oborxxjel);    
+
+   fout = fopen("/tmp/mikas/oborxxjel", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%d\n",oborxxjel);    
+   fclose(fout);
+
+
     float rashchas=((bRead[37]<<8)||bRead[36])/50;
     printf("-- Расход л/час: %f\n",rashchas);    
+
+   fout = fopen("/tmp/mikas/rashchas", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%f\n",rashchas);    
+   fclose(fout);
+
+
     float rashod=((bRead[39]<<8)||bRead[38])/128;
     printf("-- Расход л/100km: %f\n",rashod);    
+
+   fout = fopen("/tmp/mikas/rashod", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%f\n",rashod);    
+   fclose(fout);
+
 
     //Признаки
     if((priznak1&0b1)!=0){
@@ -293,11 +382,44 @@ int main(int argc, char **argv)
     }
 
 
-   fdout = open("fileout.bin", O_RDWR);  // open file to output bin-data from COM-port  
+   fdout = open("/tmp/mikas/param.bin", O_RDWR);  // open file to output bin-data from COM-port  
    if (!fdout) perror("Open/create out-file: unable to open file!");  
     write(fdout,bRead,BytesRead);
     close(fdout);
-   return(0);
+
+
+
+
+    n = write(fd,MikasProbeg, 6);  
+    if (n<6) return;  
+    usleep(100000);
+//   while(1){
+    BytesRead = read(fd, bRead, BUFSIZE);
+//    if (BytesRead != -1){
+    printf("\nBytes readed %d\n", BytesRead);  
+    if(bRead[10]==0x61){
+	printf("Recived data packet OK.\n");
+    }else{
+	printf("Recived data packet false.\n");
+      return(0);
+   }
+
+
+   unsigned long probeg=(bRead[17]<<24)|(bRead[18]<<16)|(bRead[19]<<8)|(bRead[20]);
+   printf("-- Пробег: %lu\n",probeg);    
+
+
+
+   fout = fopen("/tmp/mikas/probeg", "w");  // open file to output bin-data from COM-port  
+   if (!fout) perror("Open/create out-file: unable to open file!");  
+   fprintf(fout,"%lu\n",probeg);    
+   fclose(fout);
+
+
+   fdout = open("/tmp/mikas/probeg.bin", O_RDWR);  // open file to output bin-data from COM-port  
+   if (!fdout) perror("Open/create out-file: unable to open file!");  
+    write(fdout,bRead,BytesRead);
+    close(fdout);
 
 /*
     ////////////get errors
@@ -313,6 +435,9 @@ int main(int argc, char **argv)
     }
 */
 
+    usleep(300000);
+
+
     }
 
 /*   fdout = open("ecu_temp", O_RDWR);  // open file to output bin-data from COM-port  
@@ -325,11 +450,6 @@ int main(int argc, char **argv)
     printf("ECU busy!");
     return(0);
    }
-
-   fdout = open("fileout.bin", O_RDWR);  // open file to output bin-data from COM-port  
-   if (!fdout) perror("Open/create out-file: unable to open file!");  
-    write(fdout,bRead,BytesRead);
-    close(fdout);
 
 //    }
 

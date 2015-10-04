@@ -1,5 +1,7 @@
 #!/bin/bash
 
+service hostapd restart &
+
 while true
 do
 
