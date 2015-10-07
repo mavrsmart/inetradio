@@ -131,14 +131,14 @@ int main(int argc, char **argv)
       return(0);
    }
 
-    char priznak1=bRead[13];
-    char priznak2=bRead[14];
-    char oshibka1=bRead[15];
-    char oshibka2=bRead[16];
-    char oshibka3=bRead[17];
-    char oshibka4=bRead[18];
+    char priznak1=bRead[14];  //13
+    char priznak2=bRead[15];
+    char oshibka1=bRead[16];
+    char oshibka2=bRead[17];
+    char oshibka3=bRead[18];
+    char oshibka4=bRead[19];
 
-    int temp=bRead[19]-40;
+    int temp=bRead[39]-40;
     printf("-- Температура ОЖ: %d\n",temp);    
 
    fout = fopen("/tmp/mikas/temp", "w");  // open file to output bin-data from COM-port  
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 
 
 
-    int tps=bRead[21];
+    int tps=bRead[41];
     printf("-- Положение дроссельной заслонки: %d\n",tps);    
 
    fout = fopen("/tmp/mikas/tps", "w");  // open file to output bin-data from COM-port  
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    int oboroti=bRead[22]*40;
+    int oboroti=bRead[42]*40;
     printf("-- Обороты двигателя: %d\n",oboroti);    
 
    fout = fopen("/tmp/mikas/oboroti", "w");  // open file to output bin-data from COM-port  
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    int oborotihh=bRead[23]*10;
+    int oborotihh=bRead[43]*10;
     printf("-- Обороты холостого хода: %d\n",oborotihh);    
 
 
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    int rxxcel=bRead[24];
+    int rxxcel=bRead[44];
     printf("-- РХХ целевое: %d\n",rxxcel);    
 
 
@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 
 
 
-    int rxxtek=bRead[25];
+    int rxxtek=bRead[45];
     printf("-- РХХ текущее: %d\n",rxxtek);    
 
    fout = fopen("/tmp/mikas/rxxtek", "w");  // open file to output bin-data from COM-port  
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
 
 
 
-    float uoz=bRead[26]/2;
+    float uoz=bRead[46]/2;
     printf("-- УОЗ: %f\n",uoz);    
 
    fout = fopen("/tmp/mikas/uoz", "w");  // open file to output bin-data from COM-port  
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 
 
 
-    int speed=bRead[27];
+    int speed=bRead[47];
     printf("-- Скорость: %d\n",speed);    
 
    fout = fopen("/tmp/mikas/speed", "w");  // open file to output bin-data from COM-port  
@@ -215,7 +215,7 @@ int main(int argc, char **argv)
    fprintf(fout,"%d\n",speed);    
    fclose(fout);
 
-    float vcc=5.2+bRead[28]*0.05;
+    float vcc=5.2+bRead[48]*0.05;
     printf("-- Напряжение: %f\n",vcc);    
 
    fout = fopen("/tmp/mikas/vcc", "w");  // open file to output bin-data from COM-port  
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    int oborxxjel=bRead[29]*10;
+    int oborxxjel=bRead[49]*10;
     printf("-- Желательные обороты ХХ: %d\n",oborxxjel);    
 
    fout = fopen("/tmp/mikas/oborxxjel", "w");  // open file to output bin-data from COM-port  
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    float rashchas=((bRead[37]<<8)||bRead[36])/50;
+    float rashchas=((bRead[38]<<8)|bRead[37])/50;
     printf("-- Расход л/час: %f\n",rashchas);    
 
    fout = fopen("/tmp/mikas/rashchas", "w");  // open file to output bin-data from COM-port  
@@ -242,7 +242,7 @@ int main(int argc, char **argv)
    fclose(fout);
 
 
-    float rashod=((bRead[39]<<8)||bRead[38])/128;
+    float rashod=((bRead[40]<<8)|bRead[39])/128;
     printf("-- Расход л/100km: %f\n",rashod);    
 
    fout = fopen("/tmp/mikas/rashod", "w");  // open file to output bin-data from COM-port  
