@@ -17,6 +17,9 @@ char *result_rssi[20];
 int oldstat=1;
 char refreshbitrate=1;
 
+int say40=0;
+int say98=0;
+
 char mode=0;
 
 FILE *fp;
@@ -424,9 +427,9 @@ int main (int argc, char *argv[]) {
 // закончили искать инициализацию
     if(st_init==1){
       LCD_Init();
-      sleep(0.5);
+//      sleep(0.2);
       LCD_Clear();
-      sleep(0.5);
+//      sleep(0.2);
       load_cgram();
 //      sleep(0.5);
 //      sleep(1);
@@ -445,6 +448,8 @@ int main (int argc, char *argv[]) {
 
           //Инициализация констант
           savedprobeg=readlongparam("/automedia/savedprobeg.const");
+
+//          system( "/automedia/says/start.sh &");
 
 
 	while(1){
@@ -483,6 +488,33 @@ int main (int argc, char *argv[]) {
 
         }//Конец режима инет радио
 
+       //Здесь сообщения о превышениях температур
+       int toj=readlongparam("/tmp/mikas/temp");
+       if(say40==0){
+            if(toj>40){
+    	    say40=1;
+            system( "/automedia/says/temp40.sh &");
+            }
+	}
+
+       if(say98==0){
+            if(toj>98){
+    	    say98=1;
+            system( "/automedia/says/temp98.sh &");
+            }
+	}	
+
+       if(toj<97){
+          if(say98==1){
+             say98=0;
+          }
+       }
+       if(toj<39){
+          if(say40==1){
+             say40=0;
+          }
+       }
+
        if(mode==1){//Режим одометра
          
          probeg=readlongparam("/tmp/mikas/probeg");
@@ -511,7 +543,6 @@ int main (int argc, char *argv[]) {
 
        if(mode==3){//Режим температуры и оборотов
          
-         int toj=readlongparam("/tmp/mikas/temp");
          int oboroti=readlongparam("/tmp/mikas/oboroti");
          LCD_Goto(12,1);
 	 LCD_Write_Int(toj);

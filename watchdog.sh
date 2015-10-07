@@ -21,7 +21,7 @@ else
 fi
 
 
-  sleep 5
+  sleep 1
 
   count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   echo "Received (8):" $count

@@ -18,6 +18,11 @@ sysctl -p
 
 service dnsmasq restart
 
+service pulseaudio restart
+
+echo "Шо опять?" | festival --tts --language russian &
+
+
 killall disp
 
 mkdir /tmp/lirc
@@ -65,11 +70,16 @@ killall pingtest.sh
 /automedia/watchdog.sh &
 /automedia/pingtest.sh &
 
+
+
+
 #/automedia/disp &
 
 
 #irexec -d /etc/lirc/lircrc.conf
 
 #bash /automedia/poweron.sh &
+
+#mplayer -ao pulse /automedia/songs/SHaman.mp3 &
 
 exit 0

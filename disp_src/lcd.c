@@ -211,7 +211,7 @@ void LCD_Init()
 */
 
    WriteI2C2(0b00000000);
-   usleep(200000);//   usleep(40000);
+   usleep(40000);//   usleep(40000);
 // 3 x 0x03h, 8bit
    lcd_data = 0b00110000;
    WriteI2C2(lcd_data);

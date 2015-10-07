@@ -48,7 +48,7 @@ do_log() {
 #        killall mplayer
 #         mplayer -slave -af equalizer=5:5:5:5:5:3:2:2:2:2 -af extrastereo=1.5 -af volnorm=1:0.15 -cache "$2" -cache-min "$3" "$1" | do_log
 	echo " " > /tmp/play
-         mplayer -slave "$1" -cache "$2" -cache-min "$3" | do_log
+         mplayer -ao pulse -slave "$1" -cache "$2" -cache-min "$3" | do_log
 	rm /tmp/play
 	rm /tmp/streamtitle
     done
