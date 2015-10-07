@@ -347,6 +347,49 @@ void loop() {
 	    return;
         }
 
+        if ((fp = fopen("/tmp/lirc/0", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/1", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/2", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/3", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/4", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/5", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/6", "r")) != NULL){
+	    return;
+        }
+
+        if ((fp = fopen("/tmp/lirc/7", "r")) != NULL){
+	    return;
+        }
+
+
+        if ((fp = fopen("/tmp/lirc/8", "r")) != NULL){
+	    return;
+        }
+
+
+        if ((fp = fopen("/tmp/lirc/9", "r")) != NULL){
+	    return;
+        }
+
+
         if ((fp = fopen("/tmp/lirc/power", "r")) != NULL){
 	    return;
         }
