@@ -313,6 +313,7 @@ FILE *file;
 	{
 	    real_tail="\\n";
 	    result_rssi[strlen(result_rssi)-1]=' ';
+	    result_rssi[strlen(result_rssi)]=' ';
 	};// эта часть кода добавлена лишь для отображения символа конца строки в консоль без перевода на новую строку	
  
  }
@@ -470,11 +471,11 @@ int main (int argc, char *argv[]) {
 // закончили искать инициализацию
     if(st_init==1){
       LCD_Init();
-//      sleep(0.2);
+      sleep(0.2);
       LCD_Clear();
-//      sleep(0.2);
+      sleep(0.2);
       load_cgram();
-//      sleep(0.5);
+      sleep(0.5);
 //      sleep(1);
     }else{
 	LCD_Open();

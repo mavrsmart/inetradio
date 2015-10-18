@@ -1,10 +1,9 @@
 #!/bin/bash
 
+pon internet &
 
 while true
 do
-
-pon internet &
 
 if ps ax | grep disp | grep -vq grep
 then
@@ -21,7 +20,7 @@ else
 fi
 
 
-  sleep 1
+  sleep 2
 
   count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   echo "Received (8):" $count

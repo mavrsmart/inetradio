@@ -18,10 +18,11 @@ sysctl -p
 
 service dnsmasq restart
 
+#pon internet &
+
 service pulseaudio restart
 
 echo "Шо опять?" | festival --tts --language russian &
-
 
 killall disp
 
@@ -37,7 +38,7 @@ echo "" > /tmp/title.cp1251
 echo "" > /tmp/streamtitle
 echo "" > /tmp/streamtitle.cp1251
 
-swapon /dev/mmcblk0p3 &
+swapon /dev/sda3 &
 
 sysctl -p
 

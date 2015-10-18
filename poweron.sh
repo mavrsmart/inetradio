@@ -17,7 +17,7 @@ cat /automedia/radiolist.m3u | while read LINE;
      then
       killall mplayer.sh
       killall mplayer
-      /automedia/mplayer.sh $LINE 1000 30
+      /automedia/mplayer.sh $LINE 700 30
       killall mplayer
      fi
   done

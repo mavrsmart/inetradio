@@ -4,5 +4,5 @@
     while true
     do
 	/automedia/rssi.py signal > /tmp/rssi
-	sleep 5
+	sleep 1
     done

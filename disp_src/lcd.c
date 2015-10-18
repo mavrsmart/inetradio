@@ -216,11 +216,11 @@ void LCD_Init()
    lcd_data = 0b00110000;
    WriteI2C2(lcd_data);
    STROBE_EN();
-   usleep(10000);//   usleep(5000);
+   usleep(4000);//   usleep(5000);
    STROBE_EN();
-   usleep(1000);//usleep(100);
+   usleep(100);//usleep(100);
    STROBE_EN();
-   usleep(1000);//usleep(100);
+   usleep(100);//usleep(100);
 // 4bit - 0x02h
    lcd_data = 0b00100000;
    WriteI2C2(lcd_data);
