@@ -9,14 +9,14 @@ sleep 5
 
 if ps ax | grep watchdog.sh | grep -vq grep
 then
-  sleep 1
+  echo ""
 else
   /automedia/watchdog.sh &
 fi
 
 if ps ax | grep ard.sh | grep -vq grep
 then
-  sleep 1
+  echo ""
 else
   /automedia/arduino1/ard.sh &
 fi

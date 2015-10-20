@@ -40,8 +40,8 @@ int readnumstation(){
    int num;
     int pr;
     FILE *tmp;
-//    tmp=fopen("/automedia/oldstation.db","r");
-    tmp=fopen("/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram","r");
+    tmp=fopen("/automedia/oldstation.db","r");
+//    tmp=fopen("/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram","r");
 
     if(tmp == NULL)
     {

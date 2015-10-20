@@ -18,13 +18,15 @@ sysctl -p
 
 service dnsmasq restart
 
+echo "nameserver 8.8.8.8" > /run/dnsmasq/resolv.conf
+
 #pon internet &
 
 service pulseaudio restart
 
-echo "Шо опять?" | festival --tts --language russian &
+#echo "Шо опять?" | festival --tts --language russian &
 
-killall disp
+killall disp1602
 
 mkdir /tmp/lirc
 
@@ -73,8 +75,7 @@ killall pingtest.sh
 
 
 
-
-#/automedia/disp &
+#/automedia/disp1602 &
 
 
 #irexec -d /etc/lirc/lircrc.conf

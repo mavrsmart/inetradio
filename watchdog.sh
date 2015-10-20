@@ -5,11 +5,11 @@ pon internet &
 while true
 do
 
-if ps ax | grep disp | grep -vq grep
+if ps ax | grep disp1602 | grep -vq grep
 then
   echo ""
 else
-  /automedia/disp &
+  /automedia/disp1602 &
 fi
 
 if ps ax | grep mikas | grep -vq grep
@@ -20,7 +20,7 @@ else
 fi
 
 
-  sleep 2
+  sleep 1
 
   count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   echo "Received (8):" $count

@@ -2,7 +2,8 @@
 
 #/etc/inetstart.sh &
 
- NO=`head -n 1 /sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram`
+# NO=`head -n 1 /sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram`
+ NO=`cat /automedia/oldstation.db`
 
 I=0
 ESOLD=0
@@ -44,7 +45,8 @@ if [ "$NUMS" -ge "$numindb" ];
  then
     NUMS=1
  fi
-echo $NUMS>/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram
+#echo $NUMS>/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram
+echo $NUMS> /automedia/oldstation.db
 
 killall mplayer.sh
 killall mplayer

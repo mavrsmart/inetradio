@@ -14,6 +14,7 @@ if [ "$nums" = 0 ];
 
 echo "numsv=$nums"
 echo $nums>/sys/devices/platform/sunxi-i2c.1/i2c-1/1-0068/nvram
+echo $nums > /automedia/oldstation.db
 
 killall mplayer.sh
 killall mplayer

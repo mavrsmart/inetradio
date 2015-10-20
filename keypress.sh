@@ -14,7 +14,7 @@ fi
 
 
 if [ $key == "TIMESHIFT" ] ; then
-    killall disp
+    killall disp1602
 fi
 
 if [ $key == "FULLSCREEN" ] ; then
