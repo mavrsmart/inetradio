@@ -20,7 +20,7 @@ echo "0" > /tmp/pingtest
 
 fi
 
-#sleep 1
+sleep 3
 done
 
 exit 0

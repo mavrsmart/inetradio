@@ -13,14 +13,28 @@ typedef unsigned short uint16;
 char string_lcd[500];
 char result_string[500]; //Строка в 20 символов
 char result_stringn[500]; //Строка в 20 символов
-char *result_rssi[20];
+char result_group[20];
 int oldstat=1;
 char refreshbitrate=1;
 
 int say40=0;
 int say98=0;
 
+int say60=0;
+int say70=0;
+int say80=0;
+int say90=0;
+int say100=0;
+int say110=0;
+int say120=0;
+int say130=0;
+int say140=0;
+
+int toj=0;
+
 char mode=0;
+
+int num=0;
 
 FILE *fp;
 
@@ -278,48 +292,138 @@ FILE *file;
 }
 
 
-int getrssi(){
-FILE *file; 
-    char *fname = "/tmp/rssi";
+void getgroup(){
+    FILE *tmp;
+    char tmpstr[20];
+    tmp=fopen("/automedia/radiolist.grp","r");
 
-    result_rssi[0]=0x00;
-    result_rssi[1]=0x00;
-    result_rssi[2]=0x00;
-    result_rssi[3]=0x00;
-    result_rssi[4]=0x00;
-    result_rssi[5]=0x00;
-    result_rssi[6]=0x00;
-    result_rssi[7]=0x00;
-
- 
-    file = fopen(fname,"r");
- 
-    if(file == NULL)
+    if(tmp == NULL)
     {
- 	printf("Error '%s'",fname);
-//        fclose(file);
-	return -1;
+ 	printf("Error '%s'",tmp);
+	return;
     }
- 
-    int i=0;
-    char *real_tail;
 
-    
-    while(fgets(result_rssi+strlen(result_rssi),sizeof(result_rssi),file))
-    {
-	real_tail="";
-        
-	if(result_rssi[strlen(result_rssi)-1] == '\n')//проверяем является ли последний элемент в строке символом её окончания
-	{
-	    real_tail="\\n";
-	    result_rssi[strlen(result_rssi)-1]=' ';
-	    result_rssi[strlen(result_rssi)]=' ';
-	};// эта часть кода добавлена лишь для отображения символа конца строки в консоль без перевода на новую строку	
+    for(char x=0;x!=num;x++){
+        fscanf(tmp,"%s",  &tmpstr);
+    }
+
+    fscanf(tmp,"%s",  &result_group);
+
+    if(result_group[0]==0x0){result_group[0]=' ';result_group[1]=' ';result_group[2]=' ';result_group[3]=' ';result_group[4]=' ';result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[1]==0x0){result_group[1]=' ';result_group[2]=' ';result_group[3]=' ';result_group[4]=' ';result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[2]==0x0){result_group[2]=' ';result_group[3]=' ';result_group[4]=' ';result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[3]==0x0){result_group[3]=' ';result_group[4]=' ';result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[4]==0x0){result_group[4]=' ';result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[5]==0x0){result_group[5]=' ';result_group[6]=' ';}
+    if(result_group[6]==0x0){result_group[6]=' ';}
+    result_group[7]=0x0;
  
- }
- 
-    fclose(file);
-    return 0;
+    fclose(tmp);
+}
+
+
+void eventsjob(){
+
+       //Здесь сообщения о превышениях скоростей
+       int spd=readlongparam("/tmp/mikas/speed");
+      
+       if(spd<50){say60=0;say70=0;say80=0;say90=0;say100=0;say110=0;say120=0;say130=0;say140=0;}
+       if(spd<60){say70=0;say80=0;say90=0;say100=0;say110=0;say120=0;say130=0;say140=0;}
+       if(spd<70){say80=0;say90=0;say100=0;say110=0;say120=0;say130=0;say140=0;}
+       if(spd<80){say90=0;say100=0;say110=0;say120=0;say130=0;say140=0;}
+       if(spd<90){say100=0;say110=0;say120=0;say130=0;say140=0;}
+       if(spd<100){say110=0;say120=0;say130=0;say140=0;}
+       if(spd<110){say120=0;say130=0;say140=0;}
+       if(spd<120){say130=0;say140=0;}
+       if(spd<130){say140=0;}
+
+       if(say60==0){
+            if(spd>60){
+    	    say60=1;
+            system( "/automedia/says/saywav.sh 60.wav &");
+            }
+	}
+
+       if(say70==0){
+            if(spd>70){
+    	    say70=1;
+            system( "/automedia/says/saywav.sh 70.wav &");
+            }
+	}
+
+       if(say80==0){
+            if(spd>80){
+    	    say80=1;
+            system( "/automedia/says/saywav.sh 80.wav &");
+            }
+	}
+
+       if(say90==0){
+            if(spd>90){
+    	    say90=1;
+            system( "/automedia/says/saywav.sh 90.wav &");
+            }
+	}
+
+       if(say100==0){
+            if(spd>100){
+    	    say100=1;
+            system( "/automedia/says/saywav.sh 100.wav &");
+            }
+	}
+
+       if(say110==0){
+            if(spd>110){
+    	    say110=1;
+            system( "/automedia/says/saywav.sh 110.wav &");
+            }
+	}
+
+       if(say120==0){
+            if(spd>120){
+    	    say120=1;
+            system( "/automedia/says/saywav.sh 120.wav &");
+            }
+	}
+
+       if(say130==0){
+            if(spd>130){
+    	    say130=1;
+            system( "/automedia/says/saywav.sh 130.wav &");
+            }
+	}
+
+       if(say140==0){
+            if(spd>140){
+    	    say140=1;
+            system( "/automedia/says/saywav.sh 140.wav &");
+            }
+	}
+
+
+
+       //Здесь сообщения о превышениях температур
+       toj=readlongparam("/tmp/mikas/temp");
+
+       if(toj<35){say40=0;say98=0;}
+       if(toj<95){say98=0;}
+
+
+       if(say40==0){
+            if(toj>40){
+    	    say40=1;
+            system( "/automedia/says/saywav.sh gaz.wav &");
+            }
+	}
+
+       if(say98==0){
+            if(toj>98){
+    	    say98=1;
+            system( "/automedia/says/saywav.sh peregrev.wav &");
+            }
+	}	
+
+
 }
 
 
@@ -395,6 +499,8 @@ void loop() {
 	    return;
         }
 
+
+	eventsjob();
  
 if ((fp = fopen("/tmp/newchannel.flg", "r")) != NULL){
   remove("/tmp/newchannel.flg");
@@ -403,11 +509,12 @@ if ((fp = fopen("/tmp/newchannel.flg", "r")) != NULL){
 }
 
 
+
 	    rev++;
 	    if(rev==4){rev=0;}
 //         Пишем номер станции
 	    LCD_Goto(1,1);
-	    int num=readnumstation();
+	    num=readnumstation();
 	    LCD_Write_Int(num);
 	    if(num<10){
 	    LCD_Goto(2,1);
@@ -446,12 +553,10 @@ if ((fp = fopen("/tmp/newchannel.flg", "r")) != NULL){
         LCD_Write_String(buf);
           
          //Выведем RSSI
-
-         if(getrssi()==0){
-            LCD_Goto(4,2);
-            LCD_Write_String(result_rssi);
-	 }
-
+         getgroup();
+         LCD_Goto(4,2);
+         LCD_Write_String(result_group);
+    
 
   }
 }
@@ -499,7 +604,7 @@ int main (int argc, char *argv[]) {
 	while(1){
            
            if(mode==0){//Режим инет радио
-
+	    
 	   if(refreshbitrate==1){
            //рисуем битрейт    
            int bitrate=readbitrate();
@@ -532,32 +637,8 @@ int main (int argc, char *argv[]) {
 
         }//Конец режима инет радио
 
-       //Здесь сообщения о превышениях температур
-       int toj=readlongparam("/tmp/mikas/temp");
-       if(say40==0){
-            if(toj>40){
-    	    say40=1;
-            system( "/automedia/says/temp40.sh &");
-            }
-	}
 
-       if(say98==0){
-            if(toj>98){
-    	    say98=1;
-            system( "/automedia/says/temp98.sh &");
-            }
-	}	
-
-       if(toj<97){
-          if(say98==1){
-             say98=0;
-          }
-       }
-       if(toj<39){
-          if(say40==1){
-             say40=0;
-          }
-       }
+       eventsjob();
 
        if(mode==1){//Режим одометра
          
@@ -573,13 +654,12 @@ int main (int argc, char *argv[]) {
 
 
        if(mode==2){//Режим ресходомера
-         
-         long rashchas=(float)readfloatparam("/tmp/mikas/rashchas")*100;
-         long rashod=(float)readfloatparam("/tmp/mikas/rashod")*100;
+
+         int oboroti=readlongparam("/tmp/mikas/oboroti");
          LCD_Goto(12,1);
-	 LCD_Write_Int2Dec(4,rashchas,2);
+	 LCD_Write_Int(toj);
          LCD_Goto(12,2);
-	 LCD_Write_Int2Dec(4,rashod,2);
+	 LCD_Write_Int(oboroti);
          usleep(300000);
 
        }//Конец режима расходомера
@@ -587,9 +667,14 @@ int main (int argc, char *argv[]) {
 
        if(mode==3){//Режим температуры и оборотов
          
+         int speed=readlongparam("/tmp/mikas/speed");
          int oboroti=readlongparam("/tmp/mikas/oboroti");
          LCD_Goto(12,1);
-	 LCD_Write_Int(toj);
+         LCD_Write_String("   ");
+         LCD_Goto(12,1);
+	 LCD_Write_Int(speed);
+         LCD_Goto(12,2);
+         LCD_Write_String("    ");
          LCD_Goto(12,2);
 	 LCD_Write_Int(oboroti);
          usleep(300000);
@@ -599,13 +684,6 @@ int main (int argc, char *argv[]) {
 
        if(mode==4){//Режим скорость и обороты
          
-         int speed=readlongparam("/tmp/mikas/speed");
-         int oboroti=readlongparam("/tmp/mikas/oboroti");
-         LCD_Goto(12,1);
-	 LCD_Write_Int(speed);
-         LCD_Goto(12,2);
-	 LCD_Write_Int(oboroti);
-         usleep(300000);
 
        }//Конец режима одометра
 
@@ -676,9 +754,9 @@ int main (int argc, char *argv[]) {
 	   mode=2;
 
 		    LCD_Goto(1,1);
-    		    LCD_Write_String("л/час           ");
+    		    LCD_Write_String("ОЖ град         ");
 		    LCD_Goto(1,2);
-    		    LCD_Write_String("л/100км         ");
+    		    LCD_Write_String("Обороты         ");
 
         }
 
@@ -687,22 +765,38 @@ int main (int argc, char *argv[]) {
 	   mode=3;
 
 		    LCD_Goto(1,1);
-    		    LCD_Write_String("ОЖ град         ");
+    		    LCD_Write_String("Скорость        ");
 		    LCD_Goto(1,2);
     		    LCD_Write_String("Обороты         ");
+
 
         }
         if ((fp = fopen("/tmp/lirc/4", "r")) != NULL){
            remove("/tmp/lirc/4");
 	   mode=4;
 
-		    LCD_Goto(1,1);
-    		    LCD_Write_String("Скорость        ");
-		    LCD_Goto(1,2);
-    		    LCD_Write_String("Обороты         ");
-
         }
 
+
+        if ((fp = fopen("/tmp/lirc/5", "r")) != NULL){
+           remove("/tmp/lirc/5");
+	}
+
+        if ((fp = fopen("/tmp/lirc/6", "r")) != NULL){
+           remove("/tmp/lirc/6");
+	}
+
+        if ((fp = fopen("/tmp/lirc/7", "r")) != NULL){
+           remove("/tmp/lirc/7");
+	}
+
+        if ((fp = fopen("/tmp/lirc/8", "r")) != NULL){
+           remove("/tmp/lirc/8");
+	}
+
+        if ((fp = fopen("/tmp/lirc/9", "r")) != NULL){
+           remove("/tmp/lirc/9");
+	}
 
         if ((fp = fopen("/tmp/lirc/source", "r")) != NULL){
            remove("/tmp/lirc/source");
@@ -737,23 +831,19 @@ int main (int argc, char *argv[]) {
 	    }
 	    if(mode==2){
 		    LCD_Goto(1,1);
-    		    LCD_Write_String("л/час           ");
-		    LCD_Goto(1,2);
-    		    LCD_Write_String("л/100км         ");
-	    }
-
-	    if(mode==3){
-		    LCD_Goto(1,1);
     		    LCD_Write_String("ОЖ град         ");
 		    LCD_Goto(1,2);
     		    LCD_Write_String("Обороты         ");
 	    }
 
-	    if(mode==4){
+	    if(mode==3){
 		    LCD_Goto(1,1);
     		    LCD_Write_String("Скорость        ");
 		    LCD_Goto(1,2);
     		    LCD_Write_String("Обороты         ");
+	    }
+
+	    if(mode==4){
 	    }
 
 

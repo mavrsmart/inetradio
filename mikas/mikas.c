@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 
 
 
-    int speed=bRead[47];
+    int speed=bRead[45];
     printf("-- Скорость: %d\n",speed);    
 
    fout = fopen("/tmp/mikas/speed", "w");  // open file to output bin-data from COM-port  

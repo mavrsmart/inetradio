@@ -1,26 +1,11 @@
 #!/bin/bash
 
-pon internet &
+sleep 30
 
 while true
 do
 
-if ps ax | grep disp1602 | grep -vq grep
-then
-  echo ""
-else
-  /automedia/disp1602 &
-fi
-
-if ps ax | grep mikas | grep -vq grep
-then
-  echo ""
-else
-  /automedia/mikas/mikas &
-fi
-
-
-  sleep 1
+  sleep 15
 
   count=$(ping -c 8 8.8.8.8 | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
   echo "Received (8):" $count
@@ -29,9 +14,7 @@ fi
   if [ $count -lt 5 ]; then
     # ie 70% failed
         echo "Poor network. Restart"
-        poff internet
-        pon internet &
-	sleep 30
+        killall wvdial
 	killall mplayer
 	killall mplayer.sh
 	killall pingtest.sh
@@ -39,14 +22,15 @@ fi
   fi
 else
 	echo "Not network. Restart"
-        poff internet
-        pon internet &
-	sleep 30
+        killall wvdial
 	killall mplayer
 	killall mplayer.sh
 	killall pingtest.sh
 	/automedia/pingtest.sh &
 
 fi
+
+  sleep 15
+
 
 done

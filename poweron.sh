@@ -4,6 +4,8 @@
 
 #/automedia/rssi.sh &
 
+service pulseaudio restart &
+
 while true
 do
 I=0

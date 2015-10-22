@@ -13,7 +13,15 @@
 
 #bluetoothd
 
+#/usr/bin/wvdial &
+
 sysctl -p
+
+
+#pon internet &
+#wvdial &
+
+/automedia/iptables.sh &
 
 
 service dnsmasq restart
@@ -44,9 +52,7 @@ swapon /dev/sda3 &
 
 sysctl -p
 
-/etc/iptables.sh &
-
-/etc/inetstart.sh &
+#/automedia/inetstart.sh &
 
 killall irexec
 
@@ -65,15 +71,18 @@ killall pingtest.sh
 
 /automedia/mikas/mikas &
 
-/automedia/rssi.sh &
+#/automedia/rssi.sh &
 
 
 #sleep 
 
-/automedia/watchdog.sh &
+#/automedia/watchdog.sh &
+/automedia/watchdogsoft.sh &
 /automedia/pingtest.sh &
 
+#sleep 1
 
+#pon internet &
 
 #/automedia/disp1602 &
 
